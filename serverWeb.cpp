@@ -9,6 +9,7 @@
 #include "reveil.hpp"
 #include "heure.hpp"
 #include "ntp.hpp"
+#include "eeprom.hpp"
 
 //=========================================
 //
@@ -230,6 +231,8 @@ void displayHomeMessage(void){
     wifiClient.println("<br><br>");      //Saut de lignes
     wifiClient.println("<a href= \" /alarme \" >Alarme</a>");
     wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<a href= \" /save \" >Sauver les donnees</a>");
+    wifiClient.println("<br><br>");      //Saut de lignes
     //wifiClient.println("<a href= \" /dfgsdgfqdfsg \" >test page erreur</a>");
     //wifiClient.println("<br><br>");      //Saut de lignes
 }
@@ -360,6 +363,9 @@ void analyseRequest(String request){
     }else if (request.startsWith("GET /updateNTP")){
         refreshNtpNow();
         displayConfigHeure();
+    }else if (request.startsWith("GET /save")){
+        saveDatasToFlash();
+        displayHomeMessage();
     } else {                                                // requetes erreur
         displayErrorScreen();
     }

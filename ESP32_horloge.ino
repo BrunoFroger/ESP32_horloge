@@ -14,6 +14,7 @@
 #include "ntp.hpp"
 #include "heure.hpp"
 #include "serverWeb.hpp"
+#include "eeprom.hpp"
 
 // set the LCD parameters
 
@@ -73,6 +74,9 @@ void setup() {
     initNtp();
     refreshNtpNow();
     initReveil();
+
+    initSaveToFlash();
+    
     lcd.clear();
 
     Serial.println("Fin de setup");
