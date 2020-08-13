@@ -13,6 +13,7 @@
 #include "reveil.hpp"
 #include "ntp.hpp"
 #include "heure.hpp"
+#include "serverWeb.hpp"
 
 // set the LCD parameters
 
@@ -144,16 +145,35 @@ void loop() {
             cptConfigMode++;
         }
         displayMode = displayMode % NBDISPLAYMODE;
-        Serial.print("display mode = ");
+        /*Serial.print("display mode = ");
         Serial.println(displayMode);
         Serial.print("config mode = ");
-        Serial.println(cptConfigMode);
+        Serial.println(cptConfigMode);*/
         lcd.clear();
     }
     if (!configMode){
         if (isLongClic()){
             configMode = true;
             cptConfigMode = 0;
+        }
+    }
+
+    // Check if a client has connected
+    wifiClient = wifiServer.available();
+    if (wifiClient) {
+        // a client is connected
+        //check if the client sends some data
+        delay(50); // wait a lot of time to receive datas
+        if (wifiClient.available()) {
+            // a request is available treat int
+            // Read the first line of the request
+            String request = wifiClient.readStringUntil('\r');
+            //Serial.print( "String recue du Client:   "); 
+            //Serial.println(request);
+            analyseRequest(request);
+            /*if (savetoFlashNeeded){
+                saveDatasToFlash();
+            }*/
         }
     }
 

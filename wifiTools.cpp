@@ -113,7 +113,7 @@ void initWifi(void){    // init wifi connection
 
     // Start the server
     wifiServer.begin();
-    wifiServer.println("Server started");
+    Serial.println("Server started");
 
     // Print the IP address
     Serial.print("Use this URL to connect: ");
@@ -150,8 +150,8 @@ char *getIp(){
 //=========================================
 void printInfoWifi(){
     char tmp[50];
-    sprintf(tmp,"ssid %s", wifiSsid);
+    sprintf(tmp,"%s", wifiSsid);
     afficheTexte(lcd, 0, 0, tmp);
-    sprintf(tmp,"ip %s", ipAdress);
+    sprintf(tmp,"%s", ipAdress);
     afficheTexte(lcd, 0, 1, tmp);
 }

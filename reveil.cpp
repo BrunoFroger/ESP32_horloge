@@ -37,9 +37,9 @@ char tblSymboleSonnerie[4];
 //
 //=========================================
 void resetReveil(void){
-    heureReveil = 16;
-    minutesReveil = 39;
-    reveilActif = true;
+    heureReveil = 8;
+    minutesReveil = 0;
+    reveilActif = false;
     reveilSonne = false;
 }
 
@@ -146,14 +146,12 @@ bool isReveilSonne(void){
 //=========================================
 void switchReveilOnOff(void){
     reveilActif = !reveilActif;
-    Serial.println("switch reveil on/off");
-    // provisoirement on positionne 
-    // heure reveil a heure actuelle + 1 mn
-    char tmp[50];
-    tmpHeureReveil = heure;
-    tmpMinutesReveil = minute + 1;
-    sprintf(tmp,"reveil postionne a : %02d:%02d", tmpHeureReveil, tmpMinutesReveil);
-    Serial.println(tmp);
+    Serial.print("switch reveil on/off => ");
+    /*if (reveilActif){
+        Serial.println("ON ");
+    } else {
+        Serial.println("OFF");
+    }*/
 }
 
 //=========================================
@@ -194,7 +192,7 @@ void testReveil(void){
 void printAlarme() {
     char tmp[100];
     if (isReveilActif()){
-        afficheTexte(lcd, 0 ,0 ,"Alarme : ON");
+        afficheTexte(lcd, 0 ,0 ,"Alarme : ON ");
     } else {
         afficheTexte(lcd, 0 ,0 ,"Alarme : OFF");
     }

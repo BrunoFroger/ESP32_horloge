@@ -5,6 +5,10 @@
 #ifndef __WIFITOOLS
 #define __WIFITOOLS
 
+#include <Wifi.h>
+
+extern WiFiClient wifiClient;
+extern WiFiServer wifiServer;
 
 extern void initWifi(void);
 extern char *getSsid();
