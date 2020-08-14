@@ -395,6 +395,13 @@ void update(String request){
 void accesPointUp(int index)
 {
     Serial.printf("accesPointUp %d\n", index);
+    if (index > 0){
+        Serial.println("decalage vers le haut possible");
+        String tmpSsid = getSsid(index-1);
+        String tmpPwd = getPwd(index-1);
+        setSsid(index-1,getSsid(index),getPwd(index));
+        setSsid(index,tmpSsid,tmpPwd);
+    }
 }
 
 //=========================================
@@ -405,6 +412,13 @@ void accesPointUp(int index)
 void accesPointdown(int index)
 {
     Serial.printf("accesPointdown %d\n", index);
+    if (index < NB_ACCES_POINTS - 1){
+        Serial.println("decalage vers le bas possible");
+        String tmpSsid = getSsid(index+1);
+        String tmpPwd = getPwd(index+1);
+        setSsid(index+1,getSsid(index),getPwd(index));
+        setSsid(index,tmpSsid,tmpPwd);
+    }
 }
 
 //=========================================
@@ -563,6 +577,7 @@ void analyseRequest(String request){
         displayAccesPoints();
     }else if (request.startsWith("GET /updateAccesPoint")){
         updateAccesPoint(request);
+        displayAccesPoints();
     } else {                                                // requetes erreur
         displayErrorScreen();
     }
