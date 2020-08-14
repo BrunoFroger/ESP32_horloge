@@ -146,7 +146,7 @@ bool isReveilSonne(void){
 //=========================================
 void switchReveilOnOff(void){
     reveilActif = !reveilActif;
-    Serial.print("switch reveil on/off => ");
+    //Serial.print("switch reveil on/off => ");
     /*if (reveilActif){
         Serial.println("ON ");
     } else {

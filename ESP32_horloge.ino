@@ -75,7 +75,9 @@ void setup() {
     refreshNtpNow();
     initReveil();
 
+    Serial.println("Initialisation de l'eeprom ...");
     initSaveToFlash();
+    Serial.println("Initialisation de l'eeprom OK");
     
     lcd.clear();
 

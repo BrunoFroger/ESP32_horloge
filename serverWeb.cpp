@@ -13,6 +13,57 @@
 
 //=========================================
 //
+//          displayAccesPoints
+//
+//=========================================
+void displayAccesPoints(void){
+    char tmpChaine[100];
+    //Serial.println("displayAccesPoints"); 
+    wifiClient.println("<h2>Points d'acces Wifi</h2>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<table>");
+    wifiClient.println("    <tr>");
+    wifiClient.println("        <th>SSID</th>");
+    wifiClient.println("        <th>Passwd</th>");
+    wifiClient.println("        <th>Up</th>");
+    wifiClient.println("        <th>Down</th>");
+    wifiClient.println("        <th>Edit</th>");
+    wifiClient.println("    </tr>");
+    for (int i = 0; i < NB_ACCES_POINTS ; i++){
+        wifiClient.println("    <tr>");
+        wifiClient.println("        <td>");
+        wifiClient.println(             getSsid(i));
+        wifiClient.println("        </td>");
+        wifiClient.println("        <td>");
+        wifiClient.println(             getPwd(i));
+        wifiClient.println("        </td>");
+        wifiClient.println("        <td>");
+        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/up?id=%d\">up</a>", i);
+        //Serial.println(tmpChaine);
+        wifiClient.println(tmpChaine);
+        wifiClient.println("        </td>");
+        wifiClient.println("        <td>");
+        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/down?id=%d\">down</a>", i);
+        //Serial.println(tmpChaine);
+        wifiClient.println(tmpChaine);
+        wifiClient.println("        </td>");
+        wifiClient.println("        <td>");
+        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/edit?id=%d\">edit</a>", i);
+        wifiClient.println(tmpChaine);
+        wifiClient.println("        </td>");
+        wifiClient.println("    </tr>");
+    }
+    wifiClient.println("</table>");
+    wifiClient.println("<input type=\"submit\" value=\"Valider\">");
+    wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<br><a href= \" /accesPoints \" >Refresh</a><br>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<br><a href= \" / \" >Retour</a><br>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+}
+
+//=========================================
+//
 //          displayConfigAlarme
 //
 //=========================================
@@ -231,6 +282,8 @@ void displayHomeMessage(void){
     wifiClient.println("<br><br>");      //Saut de lignes
     wifiClient.println("<a href= \" /alarme \" >Alarme</a>");
     wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<a href= \" /accesPoints \" >Editer les points d'acces Wifi</a>");
+    wifiClient.println("<br><br>");      //Saut de lignes
     wifiClient.println("<a href= \" /save \" >Sauver les donnees</a>");
     wifiClient.println("<br><br>");      //Saut de lignes
     //wifiClient.println("<a href= \" /dfgsdgfqdfsg \" >test page erreur</a>");
@@ -336,14 +389,151 @@ void update(String request){
 
 //=========================================
 //
+//          accesPointUp
+//
+//=========================================
+void accesPointUp(int index)
+{
+    Serial.printf("accesPointUp %d\n", index);
+}
+
+//=========================================
+//
+//          accesPointdown
+//
+//=========================================
+void accesPointdown(int index)
+{
+    Serial.printf("accesPointdown %d\n", index);
+}
+
+//=========================================
+//
+//          accesPointEdit
+//
+//=========================================
+void accesPointEdit(int index)
+{
+    Serial.printf("accesPointEdit %d\n", index);
+    char tmpChaine[100];
+    wifiClient.println("<h2>Modification d'un point d'acces Wifi</h2>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+    //sprintf(tmpChaine,"<form method=\"get\" action=\"updateSsid?id=%d \"  >", index);
+    sprintf(tmpChaine,"<form method=\"get\" action=\"updateSsid\"  >");
+    Serial.println(tmpChaine);
+    wifiClient.println(tmpChaine);  
+    wifiClient.println("<input");
+    wifiClient.println("   type=\"number\" ");
+    wifiClient.println("   name=\"id\" ");
+    wifiClient.println("   value=");
+    wifiClient.println(    index);
+    wifiClient.println("/>");
+    wifiClient.println("<table>");
+    wifiClient.println("    <tr>");
+    wifiClient.println("        <th>SSID</th>");
+    wifiClient.println("        <th>Passwd</th>");
+    wifiClient.println("    </tr>");
+    wifiClient.println("    <tr>");
+    wifiClient.println("        <td>");
+    wifiClient.println("            <input");
+    wifiClient.println("                type=\"string\" ");
+    wifiClient.println("                name=\"ssid\" ");
+    wifiClient.println("                value=");
+    wifiClient.println(                     getSsid(index));
+    wifiClient.println("            />");
+    wifiClient.println("        </td>");
+    wifiClient.println("        <td>");
+    wifiClient.println("            <input");
+    wifiClient.println("                type=\"string\" ");
+    wifiClient.println("                name=\"pwd\" ");
+    wifiClient.println("                value=");
+    wifiClient.println(                     getPwd(index));
+    wifiClient.println("            />");
+    wifiClient.println("        </td>");
+    wifiClient.println("    </tr>");
+    wifiClient.println("</table>");
+    wifiClient.println("<input type=\"submit\" value=\"Valider\">");
+    wifiClient.println("</form>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<br><a href= \" / \" >Retour</a><br>");
+    wifiClient.println("<br><br>");      //Saut de lignes
+}
+
+//=========================================
+//
+//          updateSsid
+//
+//=========================================
+void updateSsid(String request){
+    Serial.printf("updateSsid\n");
+    String tmp;
+    String ssid;
+    String pwd;
+    String idx;
+    int index1 = request.lastIndexOf("?");
+    int index2 = request.lastIndexOf(" HTTP");
+    tmp=request.substring(index1+1,index2);
+    do{
+        String item = tmp.substring(0,tmp.indexOf('&'));
+        //Serial.print("mise a jour de ");
+        //Serial.println(item);
+        int index = item.indexOf('=');
+        String name = item.substring(0,index);
+        String value = item.substring(index+1,item.length());
+        if (name == "id"){
+            idx = value;
+        }
+        if (name == "ssid"){
+            ssid = value;
+        }
+        tmp=tmp.substring(tmp.indexOf('&')+1, tmp.length());
+    } while (tmp.indexOf('&') != -1);
+    int index = tmp.indexOf('=');
+    String name = tmp.substring(0,index);
+    String value = tmp.substring(index+1,tmp.length());
+    if (name == "pwd"){
+        pwd = value;
+    }
+    setSsid(idx.toInt(), ssid, pwd);
+}
+
+//=========================================
+//
+//          updateAccesPoint
+//
+//=========================================
+void updateAccesPoint(String request){
+    String tmp;
+    String type;
+    int index1 = request.lastIndexOf("?");
+    int index2 = request.lastIndexOf(" HTTP");
+    type = request.substring(22,index1);
+    Serial.print("type de requete : ");
+    Serial.println(type);
+    index1 = request.lastIndexOf("=");
+    tmp=request.substring(index1+1,index2);
+    Serial.printf("action sur acces point : <%s>\n", tmp);
+    if (type == "up"){
+        accesPointUp(tmp.toInt());
+    } else if (type == "down"){
+        accesPointdown(tmp.toInt());
+    } else if (type == "edit"){
+        accesPointEdit(tmp.toInt());
+    } else {
+        Serial.printf("type inconnu <%s>", type);
+    }
+}
+
+//=========================================
+//
 //          analyseRequest
 //
 //=========================================
 void analyseRequest(String request){
 
-    //Serial.print("Requete a analyser : ");
-    //Serial.print(request);
-    //Serial.println();
+    Serial.print("Requete a analyser : ");
+    Serial.print(request);
+    Serial.println();
     displayHeader();
     if (request.equals("GET / HTTP/1.1")){                  // requete principale
         displayHomeMessage();
@@ -366,6 +556,13 @@ void analyseRequest(String request){
     }else if (request.startsWith("GET /save")){
         saveDatasToFlash();
         displayHomeMessage();
+    }else if (request.startsWith("GET /accesPoint")){      // requetes de gestion des points d'acces wifi
+        displayAccesPoints();
+    }else if (request.startsWith("GET /updateAccesPoint/updateSsid")){
+        updateSsid(request);
+        displayAccesPoints();
+    }else if (request.startsWith("GET /updateAccesPoint")){
+        updateAccesPoint(request);
     } else {                                                // requetes erreur
         displayErrorScreen();
     }

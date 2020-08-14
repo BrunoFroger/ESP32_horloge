@@ -6,20 +6,28 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include "reveil.hpp"
+#include "eeprom.hpp"
 
 
-#define EEPROM_SIZE     64
+#define EEPROM_SIZE     768
 #define EEPROM_START    0
+#define SSID_SIZE       25
+#define PWD_SIZE        30
+
+typedef struct {
+    char ssid[SSID_SIZE];
+    char pwd[PWD_SIZE];
+} accesPoint;
 
 struct{
     int heureReveil;
     int minutesReveil;
     boolean reveilActif;
+    accesPoint tblAccesPoint[NB_ACCES_POINTS];
 } storedDatas;
 
 boolean storageAvailable;
 boolean datasToUpdate;
-
 
 
 //=========================================
@@ -33,6 +41,7 @@ String booleanToString(boolean value){
     }
     return "false";
 }
+
 //=========================================
 //
 //          displayStoredDatasStructure
@@ -59,8 +68,42 @@ void displayStoredDatasStructure(void){
     tmp = booleanToString(storedDatas.reveilActif);
     tmp1 = booleanToString(isReveilActif());
     Serial.printf (" %14s  | %14s  |\n", tmp, tmp1);
-
     Serial.println("+--------------------+-----------------+-----------------+");
+
+    Serial.println();
+    Serial.println("+----------------------------------------------------------+");
+    Serial.println("|                  Points d'acces Wifi                     |");
+    Serial.println("+----------------------------------------------------------+");
+    Serial.println("| ssid                     | passwd                        |");
+    Serial.println("+--------------------------+-------------------------------+");
+    char tmpchaine[80];
+    for (int i = 0 ; i < NB_ACCES_POINTS ; i++){
+        sprintf(tmpchaine, "|%25s |%30s |", storedDatas.tblAccesPoint[i].ssid, storedDatas.tblAccesPoint[i].pwd);
+        Serial.println(tmpchaine);
+    }
+    Serial.println("+--------------------------+-------------------------------+");
+}
+
+
+//=========================================
+//
+//          initTblAccesPoints
+//
+//=========================================
+void initTblAccesPoints(){
+    int dataSize = sizeof(storedDatas);
+    Serial.print("Taille de la structure de donnees a sauvegarder : ");
+    Serial.println(dataSize);
+    Serial.print("Taille memoire reservee en eeprom : ");
+    Serial.println(EEPROM_SIZE);
+    if (dataSize > EEPROM_SIZE){
+        Serial.println("ERREUR : taille demandee trop grande pour la place reservee");
+    }
+    Serial.println("Initialisation du tableau des points d'acces wifi");
+    for (int i = 0; i < NB_ACCES_POINTS ; i++){
+        strcpy(storedDatas.tblAccesPoint[i].ssid,"");
+        strcpy(storedDatas.tblAccesPoint[i].pwd,"");
+    }
 }
 
 //=========================================
@@ -87,12 +130,12 @@ void storageError(void){
 void restoreDatasfromFlash(void){
     if (storageAvailable){
         EEPROM.get(EEPROM_START, storedDatas);
-            heureReveil = storedDatas.heureReveil;
-            minutesReveil = storedDatas.minutesReveil;
-            if (storedDatas.reveilActif != isReveilActif()){
-                switchReveilOnOff();
-            }
-        Serial.println("Restauration des données sauvegardées en Eeprom OK");
+        heureReveil = storedDatas.heureReveil;
+        minutesReveil = storedDatas.minutesReveil;
+        if (storedDatas.reveilActif != isReveilActif()){
+            switchReveilOnOff();
+        }
+        // TODO recuperation des points d'accs wifi
         displayStoredDatasStructure();
     } else {
         storageError();
@@ -105,6 +148,8 @@ void restoreDatasfromFlash(void){
 //
 //=========================================
 void initSaveToFlash(void){
+    Serial.println("Debut de initSaveToFlash");
+    initTblAccesPoints();
     if (sizeof(storedDatas) > EEPROM_SIZE){
         storageAvailable = false;
         storageError();
@@ -112,9 +157,13 @@ void initSaveToFlash(void){
         Serial.println("Init Eeprom OK");
         EEPROM.begin(EEPROM_SIZE);
         storageAvailable = true;
+        // TODO sauvegarde provisoire de initTblAccesPoints vide
+        //saveDatasToFlash();
         restoreDatasfromFlash();
+        Serial.println("datas recuperees de l'eeprom");
         datasToUpdate=false;
     }
+    Serial.println("Fin de initSaveToFlash");
 }
 
 //=========================================
@@ -123,7 +172,6 @@ void initSaveToFlash(void){
 //
 //=========================================
 boolean savetoFlashNeeded(void){
-    datasToUpdate = false;
     if (storedDatas.heureReveil != heureReveil){
         //Serial.println("heureReveil a changé");
         datasToUpdate = true;
@@ -156,6 +204,7 @@ void saveDatasToFlash(void){
             EEPROM.put(0, storedDatas);
             EEPROM.commit();
             Serial.println("Sauvegarde des données en Eeprom OK");
+            datasToUpdate = false;
         //} else {
             //Serial.println("Sauvegarde des données en Eeprom inutile, pas de changement dans les valeurs");
         }
@@ -164,3 +213,38 @@ void saveDatasToFlash(void){
     }
 }
 
+
+//=========================================
+//
+//          getSsid
+//
+//=========================================
+String getSsid(int index){
+    return storedDatas.tblAccesPoint[index].ssid;
+}
+
+//=========================================
+//
+//          setSsid
+//
+//=========================================
+void setSsid(int index, String ssid, String passwd){
+    Serial.printf("Mise a jour du ssid %d avec les valeurs\n", index);
+    Serial.print("ssid : ");
+    Serial.println(ssid);
+    Serial.print("pwd  : ");
+    Serial.println(passwd);
+    ssid.toCharArray(storedDatas.tblAccesPoint[index].ssid, ssid.length()+1);
+    passwd.toCharArray(storedDatas.tblAccesPoint[index].pwd, passwd.length()+1);
+    datasToUpdate = true;
+    displayStoredDatasStructure();
+}
+
+//=========================================
+//
+//          getPwd
+//
+//=========================================
+String getPwd(int index){
+    return storedDatas.tblAccesPoint[index].pwd;
+}

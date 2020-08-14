@@ -155,3 +155,6 @@ void printInfoWifi(){
     sprintf(tmp,"%s", ipAdress);
     afficheTexte(lcd, 0, 1, tmp);
 }
+
+
+
