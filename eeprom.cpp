@@ -29,6 +29,9 @@ struct{
 boolean storageAvailable;
 boolean datasToUpdate;
 
+char defaultAccesPointSsid[10] = "clock";
+char defaultAccesPointPwd[10] = "12345678";
+char defaultAccesPoint[50];
 
 //=========================================
 //
@@ -84,6 +87,14 @@ void displayStoredDatasStructure(void){
     Serial.println("+--------------------------+-------------------------------+");
 }
 
+//=========================================
+//
+//          getDefaultAccesPoint
+//
+//=========================================
+char *getDefaultAccesPoint(){
+    return defaultAccesPoint;
+}
 
 //=========================================
 //
@@ -100,10 +111,10 @@ void initTblAccesPoints(){
         Serial.println("ERREUR : taille demandee trop grande pour la place reservee");
     }
     Serial.println("Initialisation du tableau des points d'acces wifi");
-    setSsid(0, "clock", "1234");
+    sprintf(defaultAccesPoint,"%s/%s", defaultAccesPointSsid, defaultAccesPointPwd);
+    setSsid(0, defaultAccesPointSsid, defaultAccesPointPwd);
     for (int i = 1; i < NB_ACCES_POINTS ; i++){
         setSsid(i, "", "");
-        
     }
 }
 
@@ -136,7 +147,6 @@ void restoreDatasfromFlash(void){
         if (storedDatas.reveilActif != isReveilActif()){
             switchReveilOnOff();
         }
-        // TODO recuperation des points d'accs wifi
         displayStoredDatasStructure();
     } else {
         storageError();
@@ -260,13 +270,13 @@ int isAvailableAccesPoint(String ssid){
     char tmp[SSID_SIZE];
     ssid.toCharArray(tmp,SSID_SIZE);
     for (int i = 0 ; i < NB_ACCES_POINTS ; i++){
-        Serial.print("      compare avec le PA enregistre : ");
-        Serial.print(storedDatas.tblAccesPoint[i].ssid);
+        //Serial.print("      compare avec le PA enregistre : ");
+        //Serial.print(storedDatas.tblAccesPoint[i].ssid);
         if (strcmp(storedDatas.tblAccesPoint[i].ssid,tmp) == 0){
-            Serial.println(" => OK");
+            //Serial.println(" => OK");
             return i;
         }
-        Serial.println(" => NOK");
+        //Serial.println(" => NOK");
     }
     return -1;
 }

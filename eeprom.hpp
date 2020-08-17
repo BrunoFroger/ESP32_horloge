@@ -15,5 +15,6 @@ extern String getSsid(int);
 extern String getPwd(int);
 extern void setSsid(int, String, String);
 extern int isAvailableAccesPoint(String ssid);
+extern char *getDefaultAccesPoint();
 
 #endif
