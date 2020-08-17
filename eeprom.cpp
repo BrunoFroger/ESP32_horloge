@@ -100,9 +100,10 @@ void initTblAccesPoints(){
         Serial.println("ERREUR : taille demandee trop grande pour la place reservee");
     }
     Serial.println("Initialisation du tableau des points d'acces wifi");
-    for (int i = 0; i < NB_ACCES_POINTS ; i++){
-        strcpy(storedDatas.tblAccesPoint[i].ssid,"");
-        strcpy(storedDatas.tblAccesPoint[i].pwd,"");
+    setSsid(0, "clock", "1234");
+    for (int i = 1; i < NB_ACCES_POINTS ; i++){
+        setSsid(i, "", "");
+        
     }
 }
 
@@ -225,6 +226,15 @@ String getSsid(int index){
 
 //=========================================
 //
+//          getPwd
+//
+//=========================================
+String getPwd(int index){
+    return storedDatas.tblAccesPoint[index].pwd;
+}
+
+//=========================================
+//
 //          setSsid
 //
 //=========================================
@@ -237,14 +247,4 @@ void setSsid(int index, String ssid, String passwd){
     ssid.toCharArray(storedDatas.tblAccesPoint[index].ssid, ssid.length()+1);
     passwd.toCharArray(storedDatas.tblAccesPoint[index].pwd, passwd.length()+1);
     datasToUpdate = true;
-    displayStoredDatasStructure();
-}
-
-//=========================================
-//
-//          getPwd
-//
-//=========================================
-String getPwd(int index){
-    return storedDatas.tblAccesPoint[index].pwd;
 }

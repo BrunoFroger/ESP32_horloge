@@ -20,7 +20,9 @@ void displayAccesPoints(void){
     char tmpChaine[100];
     //Serial.println("displayAccesPoints"); 
     wifiClient.println("<h2>Points d'acces Wifi</h2>");
-    wifiClient.println("<br><br>");      //Saut de lignes
+    wifiClient.println("<p>Dans cette page vous pouvez modifier le nom et les mots de pase des points d'accès Wifi auxquels votre horloge est susceptible de se connecter.</p>");      //Saut de lignes
+    wifiClient.println("<p>Le premier point d'accès n'est pas modifiable, vous devez l'utiliser lors de l'initialisation pour créer vos points d'accès wifi.</p>");      //Saut de lignes
+    wifiClient.println("Pour l'utiliser vous devez créer un point d'accès sur votre mobile avec les parametres (clock/1234)");
     wifiClient.println("<table>");
     wifiClient.println("    <tr>");
     wifiClient.println("        <th>SSID</th>");
@@ -37,20 +39,37 @@ void displayAccesPoints(void){
         wifiClient.println("        <td>");
         wifiClient.println(             getPwd(i));
         wifiClient.println("        </td>");
-        wifiClient.println("        <td>");
-        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/up?id=%d\">up</a>", i);
-        //Serial.println(tmpChaine);
-        wifiClient.println(tmpChaine);
-        wifiClient.println("        </td>");
-        wifiClient.println("        <td>");
-        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/down?id=%d\">down</a>", i);
-        //Serial.println(tmpChaine);
-        wifiClient.println(tmpChaine);
-        wifiClient.println("        </td>");
-        wifiClient.println("        <td>");
-        sprintf(tmpChaine,"<a href=\" /updateAccesPoint/edit?id=%d\">edit</a>", i);
-        wifiClient.println(tmpChaine);
-        wifiClient.println("        </td>");
+        if (i > 0){
+            wifiClient.println("        <td>");
+            if ( i > 1){
+                sprintf(tmpChaine,"<a href=\" /updateAccesPoint/up?id=%d\">up</a>", i);
+            } else {
+                sprintf(tmpChaine, "");
+            }
+            //Serial.println(tmpChaine);
+            wifiClient.println(tmpChaine);
+            wifiClient.println("        </td>");
+            wifiClient.println("        <td>");
+            if ( i < (NB_ACCES_POINTS - 1)){
+                sprintf(tmpChaine,"<a href=\" /updateAccesPoint/down?id=%d\">down</a>", i);
+            } else {
+                sprintf(tmpChaine, "");
+            }
+            //Serial.println(tmpChaine);
+            wifiClient.println(tmpChaine);
+            wifiClient.println("        </td>");
+            wifiClient.println("        <td>");
+            sprintf(tmpChaine,"<a href=\" /updateAccesPoint/edit?id=%d\">edit</a>", i);
+            wifiClient.println(tmpChaine);
+            wifiClient.println("        </td>");
+        } else {
+            wifiClient.println("        <td>");
+            wifiClient.println("        </td>");
+            wifiClient.println("        <td>");
+            wifiClient.println("        </td>");
+            wifiClient.println("        <td>");
+            wifiClient.println("        </td>");
+        }
         wifiClient.println("    </tr>");
     }
     wifiClient.println("</table>");
@@ -577,7 +596,6 @@ void analyseRequest(String request){
         displayAccesPoints();
     }else if (request.startsWith("GET /updateAccesPoint")){
         updateAccesPoint(request);
-        displayAccesPoints();
     } else {                                                // requetes erreur
         displayErrorScreen();
     }
