@@ -14,5 +14,6 @@ extern void saveDatasToFlash(void);
 extern String getSsid(int);
 extern String getPwd(int);
 extern void setSsid(int, String, String);
+extern int isAvailableAccesPoint(String ssid);
 
 #endif

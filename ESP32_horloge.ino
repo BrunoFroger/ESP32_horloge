@@ -65,20 +65,21 @@ void setup() {
 
     resetChrono();
     resetHeure();
-
-    Serial.println("try wifi ...");
-    afficheTexte(lcd,0,0,"try wifi ...");
-    initWifi();
-    afficheTexte(lcd,0,1,getSsid());
-    delay(1000);
-    initNtp();
-    refreshNtpNow();
     initReveil();
 
     Serial.println("Initialisation de l'eeprom ...");
     initSaveToFlash();
     Serial.println("Initialisation de l'eeprom OK");
     
+    Serial.println("try wifi ...");
+    afficheTexte(lcd,0,0,"try wifi ...");
+    initWifi();
+    afficheTexte(lcd,0,1,getSsid());
+    delay(1000);
+
+    initNtp();
+    refreshNtpNow();
+
     lcd.clear();
 
     Serial.println("Fin de setup");

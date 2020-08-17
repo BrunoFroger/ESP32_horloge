@@ -5,8 +5,10 @@
 
 #include <Arduino.h>
 #include <Wifi.h>
+#include <string.h>
 
 #include "afficheur.hpp"
+#include "eeprom.hpp"
 
 char ipAdress[20];
 char wifiSsid[25];
@@ -38,6 +40,18 @@ void scanNetworks(void){    // search for availables Wifi Networks
             for (int ssidNetwork = 0 ; ssidNetwork < nbSsid ; ssidNetwork++){
                 Serial.print("  check network : ");
                 Serial.print(WiFi.SSID(ssidNetwork));
+                int availableSsidIndex = isAvailableAccesPoint(WiFi.SSID(ssidNetwork));
+                if (availableSsidIndex != -1){
+                    char tmp[30];
+                    getSsid(availableSsidIndex).toCharArray(tmp,25);
+                    strcpy(wifiSsid,tmp);
+                    getPwd(availableSsidIndex).toCharArray(tmp,30);
+                    strcpy(wifiPassword,tmp);
+                    Serial.println(" => OK");
+                    break;
+                }
+                Serial.println(" => NOK");
+                /*
                 if (WiFi.SSID(ssidNetwork) == "NETGEAR17"){
                     strcpy(wifiSsid,"NETGEAR17");
                     strcpy(wifiPassword, "largesea818");
@@ -63,6 +77,7 @@ void scanNetworks(void){    // search for availables Wifi Networks
                     break;
                 }
                 Serial.println(" => NOK");
+                */
             }
             if (strcmp(wifiSsid,"") == 0){
                 delay(2000);

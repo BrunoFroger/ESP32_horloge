@@ -248,3 +248,25 @@ void setSsid(int index, String ssid, String passwd){
     passwd.toCharArray(storedDatas.tblAccesPoint[index].pwd, passwd.length()+1);
     datasToUpdate = true;
 }
+
+
+
+//=========================================
+//
+//          isAvailableAccesPoint
+//
+//=========================================
+int isAvailableAccesPoint(String ssid){
+    char tmp[SSID_SIZE];
+    ssid.toCharArray(tmp,SSID_SIZE);
+    for (int i = 0 ; i < NB_ACCES_POINTS ; i++){
+        Serial.print("      compare avec le PA enregistre : ");
+        Serial.print(storedDatas.tblAccesPoint[i].ssid);
+        if (strcmp(storedDatas.tblAccesPoint[i].ssid,tmp) == 0){
+            Serial.println(" => OK");
+            return i;
+        }
+        Serial.println(" => NOK");
+    }
+    return -1;
+}
