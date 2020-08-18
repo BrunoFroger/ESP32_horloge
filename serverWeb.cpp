@@ -548,8 +548,10 @@ void updateAccesPoint(String request){
     Serial.printf("action sur acces point : <%s>\n", tmp);
     if (type == "up"){
         accesPointUp(tmp.toInt());
+        displayAccesPoints();
     } else if (type == "down"){
         accesPointdown(tmp.toInt());
+        displayAccesPoints();
     } else if (type == "edit"){
         accesPointEdit(tmp.toInt());
     } else {

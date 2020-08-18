@@ -157,7 +157,7 @@ void printHeure() {
     char heureString[20];
     char tmpChar;
 
-    if ((millis() - nbMillisAfficheHeure) >= 250){
+    if ((millis() - nbMillisAfficheHeure) >= 100){
         nbMillisAfficheHeure = millis();
         if (isReveilActif()){
             if (isReveilSonne()){
@@ -170,10 +170,15 @@ void printHeure() {
             //sprintf(tmp,"[ ]");
             tmpChar = ' ';
         }
+        if (annee < 2000){
+            setBlink(true);
+        } else {
+            setBlink(false);
+        }
         sprintf(dateString,"%s %02d-%02d-%04d", dayOfWeek[jourSemaine], jour, mois, annee);
         sprintf(heureString,"[ ] %02d:%02d:%02d", heure, minute, second);
         afficheTexte(lcd,0,0,dateString);
-        afficheTexte(lcd,0,1,heureString);
+        afficheTexteBlink(lcd,0,1,heureString);
         lcd.setCursor(1,1);
         lcd.write(tmpChar);
         sprintf(tmp,"%s/%s", dateString,heureString);

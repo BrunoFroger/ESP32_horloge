@@ -10,8 +10,9 @@
 extern LiquidCrystal_I2C lcd;
 
 
-void initAfficheur();
-void afficheTexte(LiquidCrystal_I2C lcd, int colonne, int ligne, String texte);
-void printReglages();
+extern void initAfficheur();
+extern void afficheTexte(LiquidCrystal_I2C lcd, int colonne, int ligne, String texte);
+extern void afficheTexteBlink(LiquidCrystal_I2C lcd, int colonne, int ligne, String texte);
+extern void setBlink(boolean);
 
 #endif

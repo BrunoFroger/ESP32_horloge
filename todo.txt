@@ -1,0 +1,14 @@
+// ESP32_horloge
+// todo.txt
+// (c) B. Froger 2020
+
+
+
+Fichier décrivant les tâches à réaliser :
+
+
+Module serveur WEB :
+- correction du bug d'affichage lorsque l'on clic sur up ou down => OK
+
+Module affichage horloge :
+- mode clignotant si horloge non synchronisée en ntp => à valider

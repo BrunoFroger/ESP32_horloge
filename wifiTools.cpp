@@ -54,38 +54,11 @@ void scanNetworks(void){    // search for availables Wifi Networks
                     getPwd(availableSsidIndex).toCharArray(tmp,30);
                     strcpy(wifiPassword,tmp);
                     //Serial.print(wifiPassword);
-                    //Serial.println(" => OK");
+                    Serial.println(" => OK");
                     wifiFound = true;
                     break;
                 }
                 Serial.println(" => NOK");
-                /*
-                if (WiFi.SSID(ssidNetwork) == "NETGEAR17"){
-                    strcpy(wifiSsid,"NETGEAR17");
-                    strcpy(wifiPassword, "largesea818");
-                    Serial.println(" => OK");
-                    break;
-                }
-                if (WiFi.SSID(ssidNetwork) == "Livebox-006d"){
-                    strcpy(wifiSsid,"Livebox-006d");
-                    strcpy(wifiPassword, "A23F1F7979C9DD3C5916324123");
-                    Serial.println(" => OK");
-                    break;
-                }
-                if (WiFi.SSID(ssidNetwork) == "TP-LINK_88E2"){
-                    strcpy(wifiSsid,"TP-LINK_88E2");
-                    strcpy(wifiPassword, "75546007");
-                    Serial.println(" => OK");
-                    break;
-                }
-                if (WiFi.SSID(ssidNetwork) == "AndroidAPBruno"){
-                    strcpy(wifiSsid,"AndroidAPBruno");
-                    strcpy(wifiPassword, "0296072588");
-                    Serial.println(" => OK");
-                    break;
-                }
-                Serial.println(" => NOK");
-                */
             }
             if (strcmp(wifiSsid,"") == 0){
                 delay(2000);

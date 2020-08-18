@@ -15,7 +15,9 @@ int lcdColumns = 16;
 int lcdRows = 2;
 LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 // LiquidCrystal_I2C lcd(0x23, lcdColumns, lcdRows);  
-
+boolean blink = false;
+boolean modeBlink = true;
+unsigned long nbMillisBlink = 0;
 
 //=========================================
 //
@@ -26,6 +28,8 @@ void initAfficheur(){
     lcd.init();
     lcd.setBacklight(HIGH); 
     lcd.clear();
+    blink = false;
+    modeBlink = true;
 }
 
 //=========================================
@@ -42,9 +46,31 @@ void afficheTexte(LiquidCrystal_I2C lcd, int colonne, int ligne, String texte){
 
 //=========================================
 //
-//          printReglages
+//          afficheTexteBlink
 //
 //=========================================
-void printReglages() {
-    afficheTexte(lcd, 0 ,0 ,"Reglages");
+void afficheTexteBlink(LiquidCrystal_I2C lcd, int colonne, int ligne, String texte){
+    if (blink){
+        if ((millis() - nbMillisBlink) > 500){
+            nbMillisBlink = millis();
+            modeBlink = !modeBlink;
+        }
+    } else {
+        modeBlink = true;
+    }
+    if (modeBlink){
+        afficheTexte(lcd, colonne, ligne, texte);
+    } else {
+        afficheTexte(lcd, colonne, ligne, "                ");
+    }
 }
+
+//=========================================
+//
+//          setBlink
+//
+//=========================================
+void setBlink(boolean value) {
+    blink = value;
+ }
+
