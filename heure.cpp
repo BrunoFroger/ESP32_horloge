@@ -89,6 +89,7 @@ void configHeure(int cptConfigModeHeure){
         }
         Serial.print(" => ");
         Serial.println(valeur);
+        setBlink(false);    // arrete le clignotement si actif
     }
     
 }

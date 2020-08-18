@@ -12,3 +12,4 @@ Module serveur WEB :
 
 Module affichage horloge :
 - mode clignotant si horloge non synchronisée en ntp => à valider
+- supprimer mode clignotement si heure mise a jour manuellement => OK l'annee doit au moins depasser 2000
