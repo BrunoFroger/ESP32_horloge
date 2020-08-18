@@ -10,6 +10,7 @@
 boolean etatBouton=false;
 unsigned long startAppui = 0;
 unsigned long dureeAppui = 0;
+unsigned long lastAction;
 
 //=========================================
 //
@@ -30,6 +31,7 @@ boolean isShortClic(void){
     if (tmp) {
         //Serial.println("is short clic");
         dureeAppui = 0;
+        lastAction = millis();
     }
     return tmp;
 }
@@ -44,6 +46,7 @@ boolean isLongClic(void){
     if (tmp) {
         //Serial.println("is long clic");
         dureeAppui = 0;
+        lastAction = millis();
     }
     return tmp;
 }
@@ -76,4 +79,13 @@ boolean readBouton(void){
         etatBouton = false;
     }
     return etatBouton;
+}
+
+//=========================================
+//
+//          getLastAction 
+//
+//=========================================
+unsigned long getLastAction(){
+    return lastAction;
 }

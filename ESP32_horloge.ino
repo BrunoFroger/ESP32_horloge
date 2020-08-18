@@ -20,6 +20,7 @@
 
 // time varaibles
 unsigned long nbMillis;
+unsigned long delaiLastAction;
 int displayMode, configHeureMode;
 
 #define NBDISPLAYMODE   5
@@ -182,6 +183,14 @@ void loop() {
                 saveDatasToFlash();
             }*/
         }
+    }
+
+    // si aucune action au bout de 10s on revient a l'ecran d'affichage de l'heure
+    delaiLastAction = millis() - getLastAction();
+    if (delaiLastAction > 10000){
+        configMode = false;
+        cptConfigMode = 0;
+        displayMode = 0;
     }
 
     readBouton();

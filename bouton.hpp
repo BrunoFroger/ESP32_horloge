@@ -10,5 +10,6 @@ extern bool readBouton(void);
 extern bool getBoutonState(void);
 extern bool isShortClic(void);
 extern bool isLongClic(void);
+extern unsigned long getLastAction();
 
 #endif
