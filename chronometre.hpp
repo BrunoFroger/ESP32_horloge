@@ -6,7 +6,7 @@
 #ifndef __CHRONOMETRE
 #define __CHRONOMETRE
 
-#include <LiquidCrystal_I2C_esp32.h>
+#include <LiquidCrystal_I2C.h>
 
 void printChronometre();
 void chronometre(int);

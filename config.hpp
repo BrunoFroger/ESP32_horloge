@@ -6,7 +6,7 @@
 #ifndef __CONFIG
 #define __CONFIG
 
-#include <LiquidCrystal_I2C_esp32.h>
+#include <LiquidCrystal_I2C.h>
 
 extern bool configMode;
 extern int cptConfigMode;

@@ -7,6 +7,7 @@
 #include <EEPROM.h>
 #include "reveil.hpp"
 #include "eeprom.hpp"
+#include <String.h>
 
 
 #define EEPROM_SIZE     768
@@ -20,6 +21,7 @@ typedef struct {
 } accesPoint;
 
 struct{
+    char eepromInitialized[15]="";
     int heureReveil;
     int minutesReveil;
     boolean reveilActif;
@@ -38,7 +40,7 @@ char defaultAccesPoint[50];
 //          booleanToString
 //
 //=========================================
-String booleanToString(boolean value){
+char *booleanToString(boolean value){
     if (value){
         return "true";
     }
@@ -58,19 +60,20 @@ void displayStoredDatasStructure(void){
     Serial.println("| nom                | valeur eeprom   | valeur memoire  |");
     Serial.println("+--------------------+-----------------+-----------------+");
     Serial.print  ("| heure de reveil    |");
-    tmp = String(storedDatas.heureReveil);
-    tmp1 = String(heureReveil);
-    Serial.printf (" %14s  | %14s  |\n", tmp, tmp1);
+    //tmp = String(storedDatas.heureReveil);
+    //tmp1 = String(heureReveil);
+    Serial.printf (" %14d  | %14d  |\n", storedDatas.heureReveil, heureReveil);
+    //Serial.printf (" %14s  | %14s  |\n", tmp, tmp1);
 
     Serial.print  ("| minutes de reveil  |");
-    tmp = String(storedDatas.minutesReveil);
-    tmp1 = String(minutesReveil);
-    Serial.printf (" %14s  | %14s  |\n", tmp, tmp1);
+    //tmp = String(storedDatas.minutesReveil);
+    //tmp1 = String(minutesReveil);
+    Serial.printf (" %14d  | %14d  |\n", storedDatas.minutesReveil, minutesReveil);
 
     Serial.print  ("| reveil on/off      |");
-    tmp = booleanToString(storedDatas.reveilActif);
-    tmp1 = booleanToString(isReveilActif());
-    Serial.printf (" %14s  | %14s  |\n", tmp, tmp1);
+    //tmp = booleanToString(storedDatas.reveilActif);
+    //tmp1 = booleanToString(isReveilActif());
+    Serial.printf (" %14s  | %14s  |\n", booleanToString(storedDatas.reveilActif), booleanToString(isReveilActif()));
     Serial.println("+--------------------+-----------------+-----------------+");
 
     Serial.println();
@@ -102,6 +105,7 @@ char *getDefaultAccesPoint(){
 //
 //=========================================
 void initTblAccesPoints(){
+    Serial.println("initTblAccesPoints => debut");
     int dataSize = sizeof(storedDatas);
     Serial.print("Taille de la structure de donnees a sauvegarder : ");
     Serial.println(dataSize);
@@ -116,6 +120,7 @@ void initTblAccesPoints(){
     for (int i = 1; i < NB_ACCES_POINTS ; i++){
         setSsid(i, "", "");
     }
+    Serial.println("initTblAccesPoints => fin");
 }
 
 //=========================================
@@ -140,17 +145,26 @@ void storageError(void){
 //
 //=========================================
 void restoreDatasfromFlash(void){
-    if (storageAvailable){
-        EEPROM.get(EEPROM_START, storedDatas);
-        heureReveil = storedDatas.heureReveil;
-        minutesReveil = storedDatas.minutesReveil;
-        if (storedDatas.reveilActif != isReveilActif()){
-            switchReveilOnOff();
-        }
-        displayStoredDatasStructure();
-    } else {
+    Serial.println("restoreDatasfromFlash => debut");
+    if (!storageAvailable){
         storageError();
+        Serial.println("restoreDatasfromFlash => debut");
+        return;
     }
+    EEPROM.get(EEPROM_START, storedDatas);
+    if (strcmp(storedDatas.eepromInitialized,"initialized")!= 0){
+        Serial.println("ERROR : EEPROM not initialized");
+        initSaveToFlash();
+        Serial.println("restoreDatasfromFlash => debut");
+        return;
+    }
+    heureReveil = storedDatas.heureReveil;
+    minutesReveil = storedDatas.minutesReveil;
+    if (storedDatas.reveilActif != isReveilActif()){
+        switchReveilOnOff();
+    }
+    displayStoredDatasStructure();
+    Serial.println("restoreDatasfromFlash => debut");
 }
 
 //=========================================
@@ -159,7 +173,7 @@ void restoreDatasfromFlash(void){
 //
 //=========================================
 void initSaveToFlash(void){
-    Serial.println("Debut de initSaveToFlash");
+    Serial.println("initSaveToFlash => debut");
     initTblAccesPoints();
     if (sizeof(storedDatas) > EEPROM_SIZE){
         storageAvailable = false;
@@ -170,11 +184,23 @@ void initSaveToFlash(void){
         storageAvailable = true;
         // TODO sauvegarde provisoire de initTblAccesPoints vide
         //saveDatasToFlash();
-        restoreDatasfromFlash();
-        Serial.println("datas recuperees de l'eeprom");
+        Serial.print("Valeur de eepromInitialized : ");
+        Serial.println(storedDatas.eepromInitialized);
+        if (strcmp(storedDatas.eepromInitialized,"initialized") != 0){
+            Serial.println("initSaveToFlash => Initialisation de l'eeprom avec valeur origine");
+            strcpy(storedDatas.eepromInitialized,"initialized");
+            storedDatas.heureReveil=-1; // to force update of eeprom
+            storedDatas.minutesReveil=-1;
+            storedDatas.reveilActif=false;
+            Serial.println("datas initialisée dans l'eeprom");
+            saveDatasToFlash();
+        } else {
+            restoreDatasfromFlash();
+            Serial.println("datas recuperees de l'eeprom");
+        }
         datasToUpdate=false;
     }
-    Serial.println("Fin de initSaveToFlash");
+    Serial.println("initSaveToFlash => fin");
 }
 
 //=========================================
@@ -207,6 +233,7 @@ boolean savetoFlashNeeded(void){
 //
 //=========================================
 void saveDatasToFlash(void){
+    Serial.println("saveDatasToFlash => debut");
     if (storageAvailable){
         if (savetoFlashNeeded()){
             storedDatas.heureReveil = heureReveil;
@@ -216,12 +243,13 @@ void saveDatasToFlash(void){
             EEPROM.commit();
             Serial.println("Sauvegarde des données en Eeprom OK");
             datasToUpdate = false;
-        //} else {
-            //Serial.println("Sauvegarde des données en Eeprom inutile, pas de changement dans les valeurs");
+        } else {
+            Serial.println("Sauvegarde des données en Eeprom inutile, pas de changement dans les valeurs");
         }
     } else {
         storageError();
     }
+    Serial.println("saveDatasToFlash => fin");
 }
 
 
@@ -249,11 +277,11 @@ String getPwd(int index){
 //
 //=========================================
 void setSsid(int index, String ssid, String passwd){
-    Serial.printf("Mise a jour du ssid %d avec les valeurs\n", index);
+    /*Serial.printf("Mise a jour du ssid %d avec les valeurs\n", index);
     Serial.print("ssid : ");
     Serial.println(ssid);
     Serial.print("pwd  : ");
-    Serial.println(passwd);
+    Serial.println(passwd);*/
     ssid.toCharArray(storedDatas.tblAccesPoint[index].ssid, ssid.length()+1);
     passwd.toCharArray(storedDatas.tblAccesPoint[index].pwd, passwd.length()+1);
     datasToUpdate = true;

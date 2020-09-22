@@ -4,7 +4,7 @@
 
 
 #include <Arduino.h>
-#include <Wifi.h>
+#include "wifiTools.hpp"
 #include <string.h>
 
 #include "afficheur.hpp"
@@ -21,11 +21,18 @@ WiFiServer wifiServer(80);//Ecouter le port 80
 
 //=========================================
 //
-//          scanNetworks
+//          deconnecteWifi
 //
 //=========================================
 void deconnecteWifi(){
-    WiFi.disconnect();
+    Serial.println("deconnecteWifi => debut");
+    if (WiFi.status() == WL_CONNECTED){
+        Serial.println("deconnecteWifi => try");
+        delay(100);
+        WiFi.disconnect();
+        Serial.println("deconnecteWifi => OK");
+    }
+    Serial.println("deconnecteWifi => fin");
 }
 
 //=========================================
@@ -34,6 +41,7 @@ void deconnecteWifi(){
 //
 //=========================================
 void scanNetworks(void){    // search for availables Wifi Networks
+    Serial.println("scanNetworks => debut");
     int nbSsid = WiFi.scanNetworks();
     if (nbSsid != -1){
         Serial.print(nbSsid);
@@ -74,6 +82,7 @@ void scanNetworks(void){    // search for availables Wifi Networks
             }
         }
     }
+    Serial.println("scanNetworks => fin");
 }
 
 //=========================================
@@ -96,10 +105,23 @@ void printInfoWifi(){
 //=========================================
 void initWifi(void){    // init wifi connection
 
+    Serial.println("initWifi => debut");
+    delay(100);
+    Serial.println("initWifi => check wifi status");
+    if (WiFi.status() == WL_NO_SHIELD){
+        Serial.println("initWifi => ERROR : No shield detected !!");
+        return;
+    }
+    Serial.println("initWifi => a shield is detected");
+    delay(1000);
+    Serial.println("initWifi => set wifi mode to WIFI_STA");
+    WiFi.mode(WIFI_STA);
+    Serial.println("initWifi => set wifi mode to WIFI_STA : OK");
     cptTryWifi = 0;
     deconnecteWifi();
     delay(1000);
     scanNetworks();
+    delay(1000);
     if (wifiFound){
         // Connect to WiFi network
         Serial.print("Connecting to ");
@@ -148,6 +170,7 @@ void initWifi(void){    // init wifi connection
         printInfoWifi();
         delay(5000);
     }
+    Serial.println("initWifi => fin");
 }
 
 //=========================================
@@ -176,5 +199,3 @@ char *getIp(){
 boolean isWifiConnected(){
     return wifiConnected;
 }
-
-

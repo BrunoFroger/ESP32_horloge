@@ -4,7 +4,6 @@
 
 
 #include <Arduino.h>
-#include <Wifi.h>
 #include "wifiTools.hpp"
 #include "reveil.hpp"
 #include "heure.hpp"
@@ -536,24 +535,24 @@ void updateSsid(String request){
 //
 //=========================================
 void updateAccesPoint(String request){
-    String tmp;
-    String type;
+    char tmp[50];
+    char type[10];
     int index1 = request.lastIndexOf("?");
     int index2 = request.lastIndexOf(" HTTP");
-    type = request.substring(22,index1);
+    request.substring(22,index1).toCharArray(type,10);
     Serial.print("type de requete : ");
     Serial.println(type);
     index1 = request.lastIndexOf("=");
-    tmp=request.substring(index1+1,index2);
+    request.substring(index1+1,index2).toCharArray(tmp,50);
     Serial.printf("action sur acces point : <%s>\n", tmp);
     if (type == "up"){
-        accesPointUp(tmp.toInt());
+        accesPointUp(atoi(tmp));
         displayAccesPoints();
     } else if (type == "down"){
-        accesPointdown(tmp.toInt());
+        accesPointdown(atoi(tmp));
         displayAccesPoints();
     } else if (type == "edit"){
-        accesPointEdit(tmp.toInt());
+        accesPointEdit(atoi(tmp));
     } else {
         Serial.printf("type inconnu <%s>", type);
     }

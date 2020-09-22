@@ -5,7 +5,7 @@
 #ifndef __AFFICHEUR
 #define __AFFICHEUR
 
-#include <LiquidCrystal_I2C_esp32.h>
+#include <LiquidCrystal_I2C.h>
 
 extern LiquidCrystal_I2C lcd;
 

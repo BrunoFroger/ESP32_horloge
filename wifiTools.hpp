@@ -5,7 +5,8 @@
 #ifndef __WIFITOOLS
 #define __WIFITOOLS
 
-#include <Wifi.h>
+//#include <WiFi.h>
+#include <ESP8266WiFi.h>
 
 extern WiFiClient wifiClient;
 extern WiFiServer wifiServer;
