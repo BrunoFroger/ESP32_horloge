@@ -10,6 +10,7 @@
 #define NB_ACCES_POINTS 10
 
 extern void initSaveToFlash(void);
+extern void restoreDatasfromFlash(boolean storageAvailable);
 extern void saveDatasToFlash(void);
 extern String getSsid(int);
 extern String getPwd(int);

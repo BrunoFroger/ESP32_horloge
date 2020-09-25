@@ -252,7 +252,7 @@ void displayHeader(void){
     wifiClient.println("    }");
     wifiClient.println("</style>");
     wifiClient.println("<html>");
-    wifiClient.println("<head><title>Horloge ESP 32</title>");   //Pour l'onglet du navigateur
+    wifiClient.println("<head><title>Horloge WeMos D1 R1</title>");   //Pour l'onglet du navigateur
     wifiClient.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no\" />"); 
     //wifiClient.println("<meta http-equiv=\"refresh\" content=\"5\" />");
     wifiClient.println("<meta charset=\"utf-8\" />"); 
@@ -545,13 +545,13 @@ void updateAccesPoint(String request){
     index1 = request.lastIndexOf("=");
     request.substring(index1+1,index2).toCharArray(tmp,50);
     Serial.printf("action sur acces point : <%s>\n", tmp);
-    if (type == "up"){
+    if (strcmp(type,"up") == 0){
         accesPointUp(atoi(tmp));
         displayAccesPoints();
-    } else if (type == "down"){
+    } else if (strcmp(type,"down") == 0){
         accesPointdown(atoi(tmp));
         displayAccesPoints();
-    } else if (type == "edit"){
+    } else if (strcmp(type,"edit") == 0){
         accesPointEdit(atoi(tmp));
     } else {
         Serial.printf("type inconnu <%s>", type);

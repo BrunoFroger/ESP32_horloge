@@ -3,7 +3,7 @@
 // (c) B. Froger 2020
 
 #include <arduino.h>
-#include <WiFi.h>
+//#include <WiFi.h>
 
 #include "afficheur.hpp"
 #include "bouton.hpp"
@@ -45,6 +45,7 @@ void setup() {
     delay(1000);
     if (timeoutInitSerial != 0)
     {
+        Serial.println();
         Serial.println("Serial initialized");
     } else
     {
@@ -69,7 +70,7 @@ void setup() {
     initReveil();
 
     Serial.println("Initialisation de l'eeprom ...");
-    initSaveToFlash();
+    restoreDatasfromFlash(true);
     Serial.println("Initialisation de l'eeprom OK");
     
     afficheTexte(lcd,0,0,"try wifi ...");

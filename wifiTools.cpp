@@ -117,9 +117,9 @@ void initWifi(void){    // init wifi connection
     Serial.println("initWifi => set wifi mode to WIFI_STA");
     WiFi.mode(WIFI_STA);
     Serial.println("initWifi => set wifi mode to WIFI_STA : OK");
-    cptTryWifi = 0;
     deconnecteWifi();
     delay(1000);
+    cptTryWifi = 0;
     scanNetworks();
     delay(1000);
     if (wifiFound){
