@@ -5,7 +5,7 @@
 
 #include <arduino.h>
 
-#define PIN_BOUTON 12
+#define PIN_BOUTON 0   // D3     
 
 boolean etatBouton=false;
 unsigned long startAppui = 0;
@@ -53,11 +53,37 @@ boolean isLongClic(void){
 
 //=========================================
 //
+//          testAllBoutons 
+//
+//=========================================
+void testAllBoutons(void){
+    #define NB_BOUTONS  6
+    int tblBouton[NB_BOUTONS]={0,12,13,14,15,16};
+    Serial.println("---------------------------------");
+    for (int i = 0; i < NB_BOUTONS ; i++){
+        if (digitalRead(tblBouton[i]) == 0){
+            Serial.print("Bouton ");
+            Serial.print(i);
+            Serial.print(" appuye");
+            Serial.println();
+        } else {
+            Serial.print("Bouton ");
+            Serial.print(i);
+            Serial.print(" relache");
+            Serial.println();
+        }
+    }
+}
+
+//=========================================
+//
 //          readBouton 
 //
 //=========================================
 boolean readBouton(void){
-    boolean boutonAppuye = (digitalRead(PIN_BOUTON) == 1);
+    // TODO a mettre en commenatireune fois le bon bouton determine
+    //testAllBoutons();
+    boolean boutonAppuye = (digitalRead(PIN_BOUTON) == 0);
     if (boutonAppuye && !etatBouton){
         // le bouton vient d'etre appuyé
         //Serial.println("bouton appuyé");
