@@ -5,6 +5,7 @@
 
 #include <Arduino.h>
 #include "wifiTools.hpp"
+#include "serverWeb.hpp"
 #include <string.h>
 
 #include "afficheur.hpp"
@@ -17,7 +18,7 @@ int cptTryWifi = 0;
 boolean wifiConnected = false;
 boolean wifiFound = false;
 WiFiClient wifiClient;
-WiFiServer wifiServer(80);//Ecouter le port 80
+ESP8266WebServer wifiServer(80);//Ecouter le port 80
 
 //=========================================
 //
@@ -151,6 +152,7 @@ void initWifi(void){    // init wifi connection
         Serial.println("WiFi connected");
 
         // Start the server
+        serverWebInit();
         wifiServer.begin();
         Serial.println("Server started");
 

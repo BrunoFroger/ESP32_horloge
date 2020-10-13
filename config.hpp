@@ -11,7 +11,6 @@
 extern bool configMode;
 extern int cptConfigMode;
 
-void config();
 void configInit();
 
 #endif

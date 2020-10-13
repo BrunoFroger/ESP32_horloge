@@ -9,12 +9,14 @@
 #include "bouton.hpp"
 #include "config.hpp"
 #include "chronometre.hpp"
+#include "cptRebours.hpp"
 #include "wifiTools.hpp"
 #include "reveil.hpp"
 #include "ntp.hpp"
 #include "heure.hpp"
 #include "serverWeb.hpp"
 #include "eeprom.hpp"
+#include "temperature.hpp"
 
 // set the LCD parameters
 
@@ -22,9 +24,10 @@
 unsigned long nbMillis;
 unsigned long delaiLastAction;
 int displayMode, configHeureMode;
+boolean action_en_cours;
 
-#define NBDISPLAYMODE   5
-char tblModeDisplay[NBDISPLAYMODE][15] = {"heure", "alarme", "chronometre", "Wifi", "NTP"};
+#define NBDISPLAYMODE   7
+char tblModeDisplay[NBDISPLAYMODE][15] = {"heure", "alarme", "chronometre", "cpt rebours", "Wifi", "NTP", "temperature"};
 
 //=========================================
 //
@@ -68,6 +71,7 @@ void setup() {
     resetChrono();
     resetHeure();
     initReveil();
+    initTemperature();
 
     Serial.println("Initialisation de l'eeprom ...");
     restoreDatasfromFlash(true);
@@ -111,6 +115,7 @@ void loop() {
                 }
                 break;
             case 1 : // mode affichage heure infos aloarme
+                action_en_cours = true;
                 if (!configMode){
                     // affichege de l'ecran d'alarme
                     printAlarme();
@@ -120,13 +125,23 @@ void loop() {
                 }
                 break;
             case 2 : // mode affichage chronometre
+                action_en_cours = true;
                 if (!configMode){
                     printChronometre();
                 } else {
                     chronometre(cptConfigMode);
                 }
                 break;
-            case 3 : // mode wifi
+            case 3 : // mode affichage compte a rebours
+                action_en_cours = true;
+                if (!configMode){
+                    printCptRebours();
+                } else {
+                    cptRebours(cptConfigMode);
+                }
+                break;
+            case 4 : // mode wifi
+                action_en_cours = true;
                 if (!configMode){
                     printInfoWifi();
                 } else {
@@ -137,12 +152,20 @@ void loop() {
                     configMode = false;
                 }
                 break;
-            case 4 : // mode NTP
+            case 5 : // mode NTP
+                action_en_cours = true;
                 if (!configMode){
                     printNtp();
                 } else {
                     refreshNtpNow();
                     configMode = false;
+                }
+                break;
+            case 6 : // mode Temperature
+                action_en_cours = false;
+                if (!configMode){
+                    printTemperature();
+                    temperature(cptConfigMode);
                 }
                 break;
         }
@@ -169,6 +192,10 @@ void loop() {
         }
     }
 
+    // check request from clients
+    wifiServer.handleClient();
+
+/*
     // Check if a client has connected
     wifiClient = wifiServer.available();
     if (wifiClient) {
@@ -182,18 +209,19 @@ void loop() {
             //Serial.print( "String recue du Client:   "); 
             //Serial.println(request);
             analyseRequest(request);
-            /*if (savetoFlashNeeded){
-                saveDatasToFlash();
-            }*/
         }
     }
-
+*/
     // si aucune action au bout de 10s on revient a l'ecran d'affichage de l'heure
-    delaiLastAction = millis() - getLastAction();
-    if (delaiLastAction > 10000){
-        configMode = false;
-        cptConfigMode = 0;
-        displayMode = 0;
+    if (action_en_cours){
+        delaiLastAction = millis() - getLastAction();
+        if (delaiLastAction > 10000){
+            lcd.clear();
+            configMode = false;
+            cptConfigMode = 0;
+            displayMode = 0;
+            action_en_cours = false;
+        }
     }
 
     readBouton();

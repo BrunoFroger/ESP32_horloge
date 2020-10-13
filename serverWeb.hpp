@@ -7,6 +7,7 @@
 #ifndef __SERVER_WEB
 #define __SERVER_WEB
 
-extern void analyseRequest(String);
+//extern void analyseRequest(String);
+extern void serverWebInit();
 
 #endif
