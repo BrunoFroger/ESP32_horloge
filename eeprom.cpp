@@ -8,6 +8,7 @@
 #include "reveil.hpp"
 #include "eeprom.hpp"
 #include <String.h>
+#include "config.hpp"
 
 
 #define EEPROM_SIZE     768
@@ -26,6 +27,7 @@ struct{
     int minutesReveil;
     boolean reveilActif;
     accesPoint tblAccesPoint[NB_ACCES_POINTS];
+    boolean tblmoduleConfig[NBDISPLAYMODE];
 } storedDatas;
 
 boolean storageAvailable;
@@ -175,6 +177,9 @@ void restoreDatasfromFlash(boolean storageAvailable){
     if (storedDatas.reveilActif != isReveilActif()){
         switchReveilOnOff();
     }
+    for (int i = 0 ; i < NBDISPLAYMODE ; i++){
+        tblConfigModule[i] = storedDatas.tblmoduleConfig[i];
+    }
     displayStoredDatasStructure();
     //Serial.println("restoreDatasfromFlash => fin");
 }
@@ -231,6 +236,11 @@ boolean savetoFlashNeeded(void){
         //Serial.println("l'activation du reveil a changé");
         datasToUpdate = true;
     }
+    for (int i = 0 ; i < NBDISPLAYMODE ; i++){
+        if ( !(storedDatas.tblmoduleConfig[i] == tblConfigModule[i])){
+            datasToUpdate = true;
+        }
+    }
     //Serial.print("savetoFlashNeeded : ");
     //Serial.println(datasToUpdate);
     //displayStoredDatasStructure();
@@ -250,6 +260,9 @@ void saveDatasToFlash(void){
             storedDatas.heureReveil = heureReveil;
             storedDatas.minutesReveil = minutesReveil;
             storedDatas.reveilActif = isReveilActif();
+            for (int i = 0 ; i < NBDISPLAYMODE ; i++){
+                storedDatas.tblmoduleConfig[i] = tblConfigModule[i];
+            }
             EEPROM.put(0, storedDatas);
             EEPROM.commit();
             Serial.println("Sauvegarde des données en Eeprom OK");
@@ -297,8 +310,6 @@ void setSsid(int index, String ssid, String passwd){
     passwd.toCharArray(storedDatas.tblAccesPoint[index].pwd, passwd.length()+1);
     datasToUpdate = true;
 }
-
-
 
 //=========================================
 //

@@ -8,9 +8,14 @@
 
 #include <LiquidCrystal_I2C.h>
 
+#define NBDISPLAYMODE   7
+
 extern bool configMode;
 extern int cptConfigMode;
+extern char tblModeDisplay[NBDISPLAYMODE][15];
+extern boolean tblConfigModule[NBDISPLAYMODE];
 
 void configInit();
+boolean switchModuleStatus(int index);
 
 #endif

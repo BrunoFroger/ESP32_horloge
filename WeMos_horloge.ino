@@ -26,8 +26,6 @@ unsigned long delaiLastAction;
 int displayMode, configHeureMode;
 boolean action_en_cours;
 
-#define NBDISPLAYMODE   7
-char tblModeDisplay[NBDISPLAYMODE][15] = {"heure", "alarme", "chronometre", "cpt rebours", "Wifi", "NTP", "temperature"};
 
 //=========================================
 //
@@ -102,6 +100,10 @@ void loop() {
 
    updateHeure();
 
+    if (!tblConfigModule[displayMode]){
+        displayMode++;   // on bypass les modules desactives
+        displayMode = displayMode % NBDISPLAYMODE;
+    }
     if ((millis() - nbMillis) >= 100){
         nbMillis = millis();
         switch (displayMode){
@@ -195,23 +197,6 @@ void loop() {
     // check request from clients
     wifiServer.handleClient();
 
-/*
-    // Check if a client has connected
-    wifiClient = wifiServer.available();
-    if (wifiClient) {
-        // a client is connected
-        //check if the client sends some data
-        // delay(50); // wait a lot of time to receive datas
-        if (wifiClient.available()) {
-            // a request is available treat int
-            // Read the first line of the request
-            String request = wifiClient.readStringUntil('\r');
-            //Serial.print( "String recue du Client:   "); 
-            //Serial.println(request);
-            analyseRequest(request);
-        }
-    }
-*/
     // si aucune action au bout de 10s on revient a l'ecran d'affichage de l'heure
     if (action_en_cours){
         delaiLastAction = millis() - getLastAction();

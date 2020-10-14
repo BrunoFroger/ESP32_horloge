@@ -10,6 +10,7 @@
 #include "ntp.hpp"
 #include "eeprom.hpp"
 #include "temperature.hpp"
+#include "config.hpp"
 
 String page;
 
@@ -350,6 +351,8 @@ void displayHomeMessage(void){
     page+= "<br><br>\n";
     page+= "<a href= \" /save \" >Sauver les donnees</a>\n";
     page+= "<br><br>\n";
+    page+= "<a href= \" /config \" >Configuration des modules à afficher</a>\n";
+    page+= "<br><br>\n";
     displayFooter();
     //Serial.println("serverWeb.cpp : displayHomeMessage => fin"); 
 }
@@ -620,6 +623,52 @@ void save(){
 
 //=========================================
 //
+//          configWeb
+//
+//=========================================
+void configWeb(){
+    //Serial.println("serverWeb.cpp : configWeb => debut");
+    char tmp[100];
+    displayHeader();
+    page += "<h2>Configuration</h2>\n";
+    page += "<br><br>\n";      //Saut de lignes
+    page += "Cette page permet de configurer les services disponibles sur ce module\n";
+    page += "<table>";
+    page += "    <tr>";
+    page += "        <th>Service</th>";
+    page += "        <th>Activation</th>";
+    page += "    </tr>";
+    for (int i = 0 ; i < NBDISPLAYMODE ; i++){
+        page += "    <tr>";
+        page += "        <td>";
+        page +=             tblModeDisplay[i];
+        page += "        </td>";
+        page += "        <td>";
+        sprintf(tmp, "<a href=\" /switchModuleConfig?id=%d \">%d</a>", i, tblConfigModule[i]);
+        page +=            tmp;
+        page += "        </td>";
+        page += "    </tr>";
+    }
+    page += "</table>";
+    page += "<br><br>\n";      //Saut de lignes
+    page += "<br><a href= \" / \" >Retour</a><br>\n";
+    page += "<br><br>\n";      //Saut de lignes
+    displayFooter();
+    //Serial.println("serverWeb.cpp : configWeb => fin");
+}
+
+//=========================================
+//
+//          switchConfig
+//
+//=========================================
+void switchConfig(){
+    switchModuleStatus(wifiServer.arg("id").toInt());
+    configWeb();
+}
+
+//=========================================
+//
 //          serverWebInit
 //
 //=========================================
@@ -645,7 +694,10 @@ void serverWebInit(){
     wifiServer.on("/updateAccesPoint/updateSsid", updateSsid);
     // affichage de la temperature
     wifiServer.on("/temperature",displayTemperature);
-    // gestion de page inexistante
+    // page de configuration
+    wifiServer.on("/config",configWeb);
+    wifiServer.on("/switchModuleConfig",switchConfig);
+    // page inexistante
     wifiServer.onNotFound(displayErrorScreen); 
     //Serial.println("serverWeb.cpp : serverWebInit => fin");
 }
