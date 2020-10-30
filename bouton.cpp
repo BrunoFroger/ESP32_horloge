@@ -81,7 +81,9 @@ void testAllBoutons(void){
 //
 //=========================================
 boolean readBouton(void){
-    // TODO a mettre en commenatireune fois le bon bouton determine
+    // lecture de l'encodeur rotatif
+    
+    // TODO a mettre en commenatire une fois le bon bouton determine
     //testAllBoutons();
     boolean boutonAppuye = (digitalRead(PIN_BOUTON) == 0);
     if (boutonAppuye && !etatBouton){
