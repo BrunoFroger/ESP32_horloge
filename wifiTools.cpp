@@ -48,6 +48,12 @@ void scanNetworks(void){    // search for availables Wifi Networks
         Serial.print(nbSsid);
         Serial.println(" wifi networks found");
         strcpy(wifiSsid,"");
+        for (int ssidNetwork = 0 ; ssidNetwork < nbSsid ; ssidNetwork++){
+            Serial.print(ssidNetwork);
+            Serial.print(" : ");
+            getSsid(isAvailableAccesPoint(WiFi.SSID(ssidNetwork))).toCharArray(tmp,25);
+            Serial.println(tmp);
+        }
         while (strcmp(wifiSsid,"") == 0){        
             for (int ssidNetwork = 0 ; ssidNetwork < nbSsid ; ssidNetwork++){
                 Serial.print("  check network : ");
