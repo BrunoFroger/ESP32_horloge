@@ -105,17 +105,18 @@ void configReveil(int cptReveilConfig){
             lcd.clear();
         }
     }*/
-    if (isLongClic()){
+    int deltaValue = getEncodeurDeltaValue();
+    if (deltaValue != 0){
         Serial.println("long clic dans config reveil");
         switch(cptReveilConfig){
             case 0:
                 reveilActif = !reveilActif;
                 break;
             case 1:
-                heureReveil++;
+                heureReveil+=deltaValue;
                 break;
             case 2:
-                minutesReveil++;
+                minutesReveil+=deltaValue;
                 break;
         }
     }

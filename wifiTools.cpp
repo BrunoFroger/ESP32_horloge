@@ -43,6 +43,7 @@ void deconnecteWifi(){
 //=========================================
 void scanNetworks(void){    // search for availables Wifi Networks
     //Serial.println("scanNetworks => debut");
+    char tmp[30];
     int nbSsid = WiFi.scanNetworks();
     if (nbSsid != -1){
         Serial.print(nbSsid);
@@ -52,7 +53,11 @@ void scanNetworks(void){    // search for availables Wifi Networks
             Serial.print(ssidNetwork);
             Serial.print(" : ");
             getSsid(isAvailableAccesPoint(WiFi.SSID(ssidNetwork))).toCharArray(tmp,25);
-            Serial.println(tmp);
+            Serial.print(tmp);
+            Serial.print(", (");
+            Serial.print(WiFi.RSSI(ssidNetwork));
+            Serial.print(")");
+            Serial.println();
         }
         while (strcmp(wifiSsid,"") == 0){        
             for (int ssidNetwork = 0 ; ssidNetwork < nbSsid ; ssidNetwork++){
@@ -60,7 +65,6 @@ void scanNetworks(void){    // search for availables Wifi Networks
                 Serial.print(WiFi.SSID(ssidNetwork));
                 int availableSsidIndex = isAvailableAccesPoint(WiFi.SSID(ssidNetwork));
                 if (availableSsidIndex != -1){
-                    char tmp[30];
                     getSsid(availableSsidIndex).toCharArray(tmp,25);
                     //Serial.print(" on a trouve : ");
                     strcpy(wifiSsid,tmp);

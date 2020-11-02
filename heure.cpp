@@ -76,16 +76,35 @@ void configHeure(int cptConfigModeHeure){
         }
         lcd.clear();
     }
-    if (isLongClic()){
-        Serial.print("incremente la veleur de ");
+    int deltaValue = getEncodeurDeltaValue();
+    if (deltaValue != 0){
+        Serial.print("incremente la valeur de ");
         Serial.print(tblParamHeure[cptConfigModeHeure]);
         switch(cptConfigModeHeure){
-            case 0 : valeur = ++annee; break;
-            case 1 : valeur = ++mois; break;
-            case 2 : valeur = ++jour; break;
-            case 3 : valeur = ++heure; break;
-            case 4 : valeur = ++minute; break;
-            case 5 : valeur = ++second; break;
+            case 0 : 
+                annee += deltaValue; 
+                deltaValue = annee;
+                break;
+            case 1 : 
+                mois += deltaValue; 
+                deltaValue = mois;
+                break;
+            case 2 : 
+                jour += deltaValue; 
+                deltaValue = jour;
+                break;
+            case 3 : 
+                heure += deltaValue; 
+                deltaValue = heure;
+                break;
+            case 4 : 
+                minute += deltaValue; 
+                deltaValue = minute;
+                break;
+            case 5 : 
+                second += deltaValue; 
+                deltaValue = second;
+                break;
         }
         Serial.print(" => ");
         Serial.println(valeur);

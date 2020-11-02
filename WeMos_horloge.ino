@@ -55,6 +55,7 @@ void setup() {
     }
 
     initAfficheur();
+    initBouton();
     delay(500);
     afficheTexte(lcd,0,0,"afficheur OK");
     Serial.println("afficheur OK");
@@ -198,6 +199,7 @@ void loop() {
     wifiServer.handleClient();
 
     // si aucune action au bout de 10s on revient a l'ecran d'affichage de l'heure
+    /*
     if (action_en_cours){
         delaiLastAction = millis() - getLastAction();
         if (delaiLastAction > 10000){
@@ -207,7 +209,7 @@ void loop() {
             displayMode = 0;
             action_en_cours = false;
         }
-    }
+    }*/
 
     readBouton();
     refreshNtp();
