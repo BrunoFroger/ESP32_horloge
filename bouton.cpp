@@ -25,22 +25,24 @@ int lastClock = HIGH;
 //
 //=========================================
 void initBouton(void){
-    Serial.println("initBouton => debut");
+    //Serial.println("initBouton => debut");
     encodeurClockPin = ENCODEUR_CLOCK_PIN;
     encodeurDtPin = ENCODEUR_DT_PIN;
     pinMode (encodeurClockPin, INPUT_PULLUP);
     pinMode (encodeurDtPin, INPUT_PULLUP);
     pinMode (PIN_BOUTON, INPUT_PULLUP);
+    /*
     Serial.print("pin Clock => ");
     Serial.println(encodeurClockPin);
     Serial.print("pin DT    => ");
     Serial.println(encodeurDtPin);
     Serial.print("pin Btn   => ");
     Serial.println(PIN_BOUTON);
+    */
     encodeurValue = 0;
     encodeurLastValue = encodeurValue;
     lastClock = HIGH;
-    Serial.println("initBouton => fin");
+    //Serial.println("initBouton => fin");
 }
 
 //=========================================
@@ -53,10 +55,10 @@ void readEncodeur(){
     //Serial.println("readEncodeur => debut");
     if ((lastClock == LOW) && (newClock == HIGH)){
         if (digitalRead(encodeurDtPin) == HIGH){
-            Serial.print("encodeur.cpp : readEncodeur-- => ");
+            //Serial.print("encodeur.cpp : readEncodeur-- => ");
             encodeurValue--;
         } else {
-            Serial.print("encodeur.cpp : readEncodeur++ => ");
+            //Serial.print("encodeur.cpp : readEncodeur++ => ");
             encodeurValue++;
         }
         Serial.println(encodeurValue);
@@ -109,7 +111,7 @@ boolean getBoutonState(void){
 boolean isShortClic(void){
     bool tmp = (dureeAppui < 300) && (dureeAppui > 0);
     if (tmp) {
-        Serial.println("is short clic");
+        //Serial.println("is short clic");
         dureeAppui = 0;
         lastAction = millis();
     }
@@ -124,7 +126,7 @@ boolean isShortClic(void){
 boolean isLongClic(void){
     bool tmp = (dureeAppui > 600);
     if (tmp) {
-        Serial.println("is long clic");
+        //Serial.println("is long clic");
         dureeAppui = 0;
         lastAction = millis();
     }
@@ -168,7 +170,7 @@ boolean readBouton(void){
     boolean boutonAppuye = (digitalRead(PIN_BOUTON) == 0);
     if (boutonAppuye && !etatBouton){
         // le bouton vient d'etre appuyé
-        Serial.println("bouton appuyé");
+        //Serial.println("bouton appuyé");
         etatBouton = true;
         startAppui = millis();
         dureeAppui = 0;
@@ -177,7 +179,7 @@ boolean readBouton(void){
         etatBouton = true;
     } else if (!boutonAppuye && etatBouton){
         // le bouton vient d'etre relaché
-        Serial.println("bouton relaché");
+        //Serial.println("bouton relaché");
         etatBouton = false;
         dureeAppui = millis() - startAppui;
         //Serial.print("duree appui = ");
