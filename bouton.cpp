@@ -61,7 +61,7 @@ void readEncodeur(){
             //Serial.print("encodeur.cpp : readEncodeur++ => ");
             encodeurValue++;
         }
-        Serial.println(encodeurValue);
+        //Serial.println(encodeurValue);
     }
     lastClock = newClock;
     //Serial.println("readEncodeur => fin");

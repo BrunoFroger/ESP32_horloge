@@ -34,7 +34,7 @@ void initTemperature(){
 char temperatureMesure[10];
 char *getTemperature(){
     float t = dht.readTemperature();
-    dtostrf(t, 4, 2, temperatureMesure);
+    dtostrf(t, 4, 1, temperatureMesure);
     return temperatureMesure;
 }
 
@@ -45,8 +45,9 @@ char *getTemperature(){
 //=========================================
 char humiditeMesure[10];
 char *getHumidity(){
-    float h = dht.readHumidity();
-    dtostrf(h, 4, 2, humiditeMesure);
+    //float h = dht.readHumidity();
+    float h = dht.computeHeatIndex();
+    dtostrf(h, 4, 1, humiditeMesure);
     return humiditeMesure;
 }
 
@@ -75,7 +76,7 @@ void afficheTemperature(){
     Serial.print(" *C ");
     Serial.println();
     */
-    sprintf(tmp,"t=%s, h=%s", getTemperature(), getHumidity());
+    sprintf(tmp,"t=%s  h=%s", getTemperature(), getHumidity());
     //sprintf(tmp,"t=%s, h=%s", temp, humidity);
     afficheTexte(lcd,0,1,tmp);
     //Serial.println("afficheTemperature => fin");

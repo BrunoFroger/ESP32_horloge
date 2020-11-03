@@ -107,7 +107,7 @@ void configReveil(int cptReveilConfig){
     }*/
     int deltaValue = getEncodeurDeltaValue();
     if (deltaValue != 0){
-        Serial.println("long clic dans config reveil");
+        //Serial.println("long clic dans config reveil");
         switch(cptReveilConfig){
             case 0:
                 reveilActif = !reveilActif;
